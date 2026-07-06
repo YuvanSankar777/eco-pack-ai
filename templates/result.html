@@ -1,136 +1,143 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Results</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoPack AI — Recommendations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a110d; --surface:#101c15; --surface2:#15271d; --line:#26382d; --line2:#3a5c47;
+  --text:#eafef1; --muted:#94ac9e; --lime:#b7f24a; --mint:#4fe6a4; --amber:#f0b64a;
+  --primary:#b7f24a; --primary-ink:#07120b; --shadow:rgba(0,0,0,.55);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;z-index:-2;
+  background:radial-gradient(800px 600px at 80% -5%,rgba(79,230,164,.13),transparent 60%),var(--bg)}
+#bg3d{position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;pointer-events:none;opacity:.7}
+h1,h2,h3{font-family:'Space Grotesk',sans-serif;letter-spacing:-.02em}
+a{color:inherit;text-decoration:none}
+.nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:16px 40px;background:rgba(10,17,13,.72);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;font-family:'Space Grotesk';font-weight:700;font-size:20px}
+.brand .mark{width:40px;height:40px;border-radius:11px;background:var(--lime);color:var(--primary-ink);
+  display:grid;place-items:center;font-size:20px;box-shadow:0 0 22px rgba(183,242,74,.45)}
+.btn{font-family:'Space Grotesk';font-weight:600;cursor:pointer;border:1.5px solid var(--line2);border-radius:12px;
+  padding:11px 20px;display:inline-flex;align-items:center;gap:9px;font-size:15px;color:var(--text);
+  background:var(--surface2);transition:transform .14s}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{background:var(--primary);color:var(--primary-ink);border:none;box-shadow:0 8px 26px rgba(183,242,74,.28)}
+.btn-primary:hover{box-shadow:0 12px 34px rgba(183,242,74,.4)}
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+.wrap{max-width:860px;margin:0 auto;padding:54px 40px}
+.eyebrow{display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono';font-weight:700;font-size:12.5px;
+  letter-spacing:.16em;color:var(--amber);text-transform:uppercase;margin-bottom:16px}
+.eyebrow::before{content:"";width:32px;height:2px;background:var(--amber);border-radius:2px}
+.head h1{font-size:50px;margin:0 0 8px;font-weight:700}
+.head h1 .grad{background:linear-gradient(100deg,var(--lime),var(--mint));-webkit-background-clip:text;background-clip:text;color:transparent}
+.head p{color:var(--muted);font-size:17px;margin:0 0 28px}
 
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
+.meta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:30px}
+.metachip{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line2);
+  border-radius:14px;padding:13px 20px;box-shadow:5px 5px 0 var(--shadow)}
+.metachip .k{font-family:'JetBrains Mono';font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase}
+.metachip .v{font-family:'Space Grotesk';font-weight:700;font-size:18px;text-transform:capitalize;margin-top:2px}
+.metachip.lime{background:rgba(183,242,74,.1);border-color:rgba(183,242,74,.45)}
+.metachip.lime .v{color:var(--lime)}
 
-            background: linear-gradient(-45deg, #1b5e20, #43a047, #00c853, #2196f3, #7b1fa2);
-            background-size: 400% 400%;
-            animation: gradient 12s ease infinite;
-
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.6;
-            animation: float 10s infinite ease-in-out;
-        }
-
-        .blob1 { width:300px;height:300px;background:#00e676;top:10%;left:10%; }
-        .blob2 { width:250px;height:250px;background:#2196f3;bottom:10%;right:10%; }
-        .blob3 { width:200px;height:200px;background:#ff4081;top:50%;left:50%; }
-
-        @keyframes float {
-            0% {transform:translateY(0);}
-            50% {transform:translateY(-40px);}
-            100% {transform:translateY(0);}
-        }
-
-        .card {
-            width: 650px;
-            padding: 30px;
-            border-radius: 15px;
-            backdrop-filter: blur(15px);
-            background: rgba(255,255,255,0.15);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            color: white;
-            text-align: center;
-            z-index: 10;
-        }
-
-        h2 {
-            text-shadow: 0 0 15px rgba(0,255,150,0.6);
-        }
-
-        table {
-            width: 100%;
-            margin-top: 20px;
-            border-collapse: collapse;
-        }
-
-        th {
-            background: rgba(0,0,0,0.4);
-        }
-
-        th, td {
-            padding: 12px;
-        }
-
-        tr {
-            transition: 0.3s;
-        }
-
-        tr:hover {
-            transform: scale(1.02);
-            background: rgba(255,255,255,0.15);
-        }
-
-        .top {
-            background: rgba(0,255,150,0.2);
-            font-weight: bold;
-            border-left: 4px solid #00e676;
-        }
-
-        button {
-            margin-top: 20px;
-            padding: 10px 20px;
-            border-radius: 10px;
-            border: none;
-            background: linear-gradient(135deg, #00e676, #00c853);
-            box-shadow: 0 0 15px rgba(0,255,150,0.6);
-            cursor: pointer;
-        }
-
-        button:hover {
-            box-shadow: 0 0 25px rgba(0,255,150,1);
-        }
-    </style>
+.resultcard{background:rgba(16,28,21,.8);border:1px solid var(--line2);border-radius:22px;
+  box-shadow:0 30px 70px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04);backdrop-filter:blur(10px);overflow:hidden}
+.rc-head{display:flex;align-items:center;justify-content:space-between;padding:18px 24px;border-bottom:1px solid var(--line)}
+.rc-head .t{font-family:'Space Grotesk';font-weight:700;font-size:16px;display:flex;align-items:center;gap:9px}
+.rc-head .c{font-family:'JetBrains Mono';font-weight:700;font-size:11.5px;color:var(--muted)}
+.rowline{display:flex;align-items:center;gap:16px;padding:18px 24px;border-bottom:1px dashed var(--line);transition:background .14s}
+.rowline:last-child{border-bottom:none}
+.rowline:hover{background:rgba(79,230,164,.04)}
+.rowline.top{background:rgba(183,242,74,.09)}
+.rank{width:38px;height:38px;flex:0 0 38px;border-radius:10px;border:1px solid var(--line2);background:var(--surface2);
+  color:var(--mint);display:grid;place-items:center;font-family:'JetBrains Mono';font-weight:700;font-size:15px}
+.rowline.top .rank{background:var(--lime);color:var(--primary-ink);border-color:#7fae2f;box-shadow:0 0 18px rgba(183,242,74,.45)}
+.rname{font-family:'Space Grotesk';font-weight:600;font-size:18px;flex:1;display:flex;align-items:center;gap:9px}
+.scorewrap{display:flex;align-items:center;gap:12px}
+.bar{height:11px;width:130px;background:#0c1712;border:1px solid var(--line);border-radius:7px;overflow:hidden}
+.bar > i{display:block;height:100%;background:linear-gradient(90deg,var(--mint),var(--lime))}
+.score{font-family:'JetBrains Mono';font-weight:700;font-size:17px;width:52px;text-align:right}
+.actions{display:flex;gap:14px;margin-top:30px;flex-wrap:wrap}
+@media(max-width:760px){.wrap{padding:34px 22px}.head h1{font-size:34px}.nav{padding:14px 22px}
+  .bar{width:74px}.rname{font-size:16px}#bg3d{opacity:.45}}
+</style>
 </head>
-
 <body>
+<canvas id="bg3d"></canvas>
 
-<div class="blob blob1"></div>
-<div class="blob blob2"></div>
-<div class="blob blob3"></div>
+<nav class="nav">
+  <a href="index.html" class="brand"><span class="mark">🌿</span> EcoPack AI</a>
+  <a href="/home" class="btn">← New search</a>
+</nav>
 
-<div class="card">
+<div class="wrap">
+  <div class="eyebrow">Recommendation</div>
+  <div class="head">
+    <h1>Top <span class="grad">packaging</span> materials</h1>
+    <p>Ranked by our AI on strength, eco-impact, cost and CO₂ — tuned to your inputs.</p>
+  </div>
 
-    <h2>🌿 Top Recommendations</h2>
+  <div class="meta">
+    <div class="metachip lime"><span class="k">Category</span><span class="v">{{ category }}</span></div>
+    <div class="metachip"><span class="k">Fragility</span><span class="v">{{ fragility }}</span></div>
+  </div>
 
-    <p><b>Category:</b> {{ category }}</p>
-    <p><b>Fragility:</b> {{ fragility }}</p>
+  <div class="resultcard">
+    <div class="rc-head"><span class="t">🏆 Best matches</span><span class="c">AI SCORE · HIGHER = BETTER</span></div>
+    {% if results %}
+      {% set scores = results | map(attribute='predicted_score') | list %}
+      {% set smin = scores | min %}
+      {% set smax = scores | max %}
+      {% set span = (smax - smin) or 1 %}
+      {% for r in results %}
+      <div class="rowline {% if loop.index == 1 %}top{% endif %}">
+        <span class="rank">{{ loop.index }}</span>
+        <span class="rname">{{ r.material_name }}{% if loop.index == 1 %} 🏆{% endif %}</span>
+        <span class="scorewrap">
+          <span class="bar"><i style="width:{{ (55 + (r.predicted_score - smin) / span * 45) | round(1) }}%"></i></span>
+          <span class="score">{{ "%.2f"|format(r.predicted_score) }}</span>
+        </span>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="rowline"><span class="rname" style="color:var(--muted)">No matching materials found — try a different product or lower the sustainability priority.</span></div>
+    {% endif %}
+  </div>
 
-    <table>
-        <tr>
-            <th>Material</th>
-            <th>AI Score</th>
-        </tr>
-
-        {% for r in results %}
-        <tr class="{% if loop.index == 1 %}top{% endif %}">
-            <td>{{ r.material_name }} {% if loop.index == 1 %}🏆{% endif %}</td>
-            <td>{{ "%.2f"|format(r.predicted_score) }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-
-    <form action="/home">
-        <button>⬅ Back</button>
-    </form>
+  <div class="actions">
+    <a href="/home" class="btn btn-primary">🔄 Analyze another product</a>
+    <a href="/" class="btn">🏠 Home</a>
+  </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  if(!window.THREE) return;
+  const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas=document.getElementById('bg3d');
+  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,0.1,100);camera.position.z=6;
+  const COUNT=800,pos=new Float32Array(COUNT*3);
+  for(let i=0;i<COUNT*3;i++)pos[i]=(Math.random()-0.5)*26;
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const pts=new THREE.Points(g,new THREE.PointsMaterial({color:0x7fe6a8,size:0.04,transparent:true,opacity:.5}));
+  scene.add(pts);
+  function layout(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();}
+  layout();addEventListener('resize',layout);
+  let t=0;(function frame(){requestAnimationFrame(frame);t+=reduce?0:0.0025;
+    pts.rotation.y=t*0.2;pts.rotation.x=t*0.05;renderer.render(scene,camera);})();
+})();
+</script>
 </body>
 </html>

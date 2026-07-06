@@ -1,205 +1,166 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>EcoPack AI</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EcoPack AI — Get a recommendation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a110d; --surface:#101c15; --surface2:#15271d; --line:#26382d; --line2:#3a5c47;
+  --text:#eafef1; --muted:#94ac9e; --lime:#b7f24a; --mint:#4fe6a4; --amber:#f0b64a;
+  --primary:#b7f24a; --primary-ink:#07120b; --shadow:rgba(0,0,0,.55);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;overflow-x:hidden;min-height:100vh}
+body::before{content:"";position:fixed;inset:0;z-index:-2;
+  background:radial-gradient(800px 600px at 85% 0%,rgba(79,230,164,.14),transparent 60%),
+    radial-gradient(700px 500px at 5% 100%,rgba(183,242,74,.08),transparent 55%),var(--bg)}
+#bg3d{position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;pointer-events:none;opacity:.85}
+h1,h2,h3{font-family:'Space Grotesk',sans-serif;letter-spacing:-.02em}
+a{color:inherit;text-decoration:none}
+.nav{position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+  padding:16px 40px;background:rgba(10,17,13,.72);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:12px;font-family:'Space Grotesk';font-weight:700;font-size:20px}
+.brand .mark{width:40px;height:40px;border-radius:11px;background:var(--lime);color:var(--primary-ink);
+  display:grid;place-items:center;font-size:20px;box-shadow:0 0 22px rgba(183,242,74,.45)}
+.btn{font-family:'Space Grotesk';font-weight:600;cursor:pointer;border:1.5px solid var(--line2);border-radius:12px;
+  padding:11px 20px;display:inline-flex;align-items:center;gap:9px;font-size:15px;color:var(--text);
+  background:var(--surface2);transition:transform .14s ease}
+.btn:hover{transform:translateY(-2px)}
 
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+.stage{max-width:1160px;margin:0 auto;padding:56px 40px;display:grid;grid-template-columns:1fr 1fr;gap:52px;align-items:center;min-height:calc(100vh - 74px)}
+.intro .eyebrow{display:flex;align-items:center;gap:12px;font-family:'JetBrains Mono';font-weight:700;
+  font-size:12.5px;letter-spacing:.16em;color:var(--amber);text-transform:uppercase;margin-bottom:16px}
+.intro .eyebrow::before{content:"";width:32px;height:2px;background:var(--amber);border-radius:2px}
+.intro h1{font-size:54px;line-height:1.0;margin:0 0 16px;font-weight:700}
+.intro h1 .grad{background:linear-gradient(100deg,var(--lime),var(--mint));-webkit-background-clip:text;background-clip:text;color:transparent}
+.intro p{color:var(--muted);font-size:17px;max-width:420px;margin:0 0 30px}
+.steps{list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:14px}
+.steps li{display:flex;align-items:center;gap:14px;font-weight:500;color:#cfe0d6}
+.steps .n{width:34px;height:34px;border-radius:9px;border:1px solid var(--line2);background:var(--surface2);
+  color:var(--mint);display:grid;place-items:center;font-family:'JetBrains Mono';font-weight:700;font-size:13px}
 
-    <style>
-        body {
-            margin: 0;
-            font-family: 'Poppins', sans-serif;
-
-            background: linear-gradient(-45deg, #1b5e20, #43a047, #00c853, #2196f3, #7b1fa2);
-            background-size: 400% 400%;
-            animation: gradient 12s ease infinite;
-
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-
-        @keyframes gradient {
-            0% {background-position: 0% 50%;}
-            50% {background-position: 100% 50%;}
-            100% {background-position: 0% 50%;}
-        }
-
-        /* 🔥 BLOBS */
-        .blob {
-            position: absolute;
-            border-radius: 50%;
-            filter: blur(80px);
-            opacity: 0.6;
-            animation: float 10s infinite ease-in-out;
-        }
-
-        .blob1 {
-            width: 300px;
-            height: 300px;
-            background: #00e676;
-            top: 10%;
-            left: 10%;
-        }
-
-        .blob2 {
-            width: 250px;
-            height: 250px;
-            background: #2196f3;
-            bottom: 10%;
-            right: 10%;
-        }
-
-        .blob3 {
-            width: 200px;
-            height: 200px;
-            background: #ff4081;
-            top: 50%;
-            left: 50%;
-        }
-
-        @keyframes float {
-            0% { transform: translateY(0px); }
-            50% { transform: translateY(-40px); }
-            100% { transform: translateY(0px); }
-        }
-
-        body::after {
-            content: "";
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-image: radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px);
-            background-size: 20px 20px;
-        }
-
-        .card {
-            width: 420px;
-            padding: 30px;
-            border-radius: 15px;
-            backdrop-filter: blur(15px);
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.3);
-            color: white;
-            z-index: 10;
-        }
-
-        h1 {
-            text-align: center;
-            text-shadow: 0 0 15px rgba(0,255,150,0.6);
-        }
-
-        p {
-            text-align: center;
-            opacity: 0.8;
-        }
-
-        label {
-            margin-top: 15px;
-            display: block;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border-radius: 8px;
-            border: none;
-        }
-
-        button {
-            width: 100%;
-            margin-top: 20px;
-            padding: 12px;
-            border: none;
-            border-radius: 10px;
-            background: linear-gradient(135deg, #00e676, #00c853);
-            box-shadow: 0 0 15px rgba(0,255,150,0.6);
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 25px rgba(0,255,150,1);
-        }
-
-        /* Loader */
-        #loader {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.6);
-            top: 0;
-            left: 0;
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .spinner {
-            width: 60px;
-            height: 60px;
-            border: 6px solid #fff;
-            border-top: 6px solid #00e676;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
-        }
-    </style>
+.formcard{background:rgba(16,28,21,.82);border:1px solid var(--line2);border-radius:22px;padding:34px;
+  box-shadow:0 30px 70px rgba(0,0,0,.55),inset 0 1px 0 rgba(255,255,255,.04);backdrop-filter:blur(10px)}
+.formcard .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(183,242,74,.08);
+  border:1.5px solid rgba(183,242,74,.4);color:var(--lime);border-radius:999px;padding:6px 13px;
+  font-family:'JetBrains Mono';font-weight:700;font-size:11.5px;margin-bottom:18px}
+.formcard h2{font-size:29px;margin:0 0 6px}
+.formcard .sub{color:var(--muted);font-size:15px;margin:0 0 24px}
+label{display:flex;align-items:center;gap:8px;font-family:'Space Grotesk';font-weight:600;font-size:14px;margin:18px 0 8px}
+input,select{width:100%;padding:14px 15px;font-family:'Inter';font-size:15px;color:var(--text);
+  background:#0c1712;border:1.5px solid var(--line2);border-radius:12px;outline:none;transition:border-color .14s,box-shadow .14s}
+input::placeholder{color:#5f7568}
+input:focus,select:focus{border-color:var(--lime);box-shadow:0 0 0 3px rgba(183,242,74,.15)}
+select{appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%234fe6a4' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");
+  background-repeat:no-repeat;background-position:right 15px center;padding-right:42px}
+option{background:#0c1712}
+.submit{width:100%;margin-top:28px;padding:16px;font-family:'Space Grotesk';font-weight:700;font-size:16px;
+  color:var(--primary-ink);background:var(--primary);border:none;border-radius:14px;cursor:pointer;
+  box-shadow:0 8px 30px rgba(183,242,74,.28);transition:transform .14s,box-shadow .14s;
+  display:flex;align-items:center;justify-content:center;gap:10px}
+.submit:hover{transform:translateY(-2px);box-shadow:0 12px 38px rgba(183,242,74,.4)}
+.backlink{margin-top:18px;text-align:center}
+.backlink a{font-family:'JetBrains Mono';font-size:13px;color:var(--muted)}
+.backlink a:hover{color:var(--lime)}
+#loader{position:fixed;inset:0;background:rgba(6,12,8,.78);backdrop-filter:blur(4px);display:none;
+  justify-content:center;align-items:center;z-index:100;flex-direction:column;gap:20px}
+.spinner{width:56px;height:56px;border:5px solid rgba(183,242,74,.2);border-top-color:var(--lime);
+  border-radius:50%;animation:spin 1s linear infinite}
+.spinner-txt{font-family:'JetBrains Mono';color:var(--mint);font-size:13px}
+@keyframes spin{100%{transform:rotate(360deg)}}
+@media(max-width:900px){.stage{grid-template-columns:1fr;gap:32px;padding:36px 22px}.intro h1{font-size:38px}
+  .nav{padding:14px 22px}#bg3d{opacity:.5}}
+</style>
 </head>
-
 <body>
+<canvas id="bg3d"></canvas>
 
-<div class="blob blob1"></div>
-<div class="blob blob2"></div>
-<div class="blob blob3"></div>
+<nav class="nav">
+  <a href="/" class="brand"><span class="mark">🌿</span> EcoPack AI</a>
+  <a href="/" class="btn">← About</a>
+</nav>
 
-<div class="card">
+<div class="stage">
+  <div class="intro">
+    <div class="eyebrow">Get started</div>
+    <h1>Tell us what<br>you're <span class="grad">shipping.</span></h1>
+    <p>One product, three quick choices. The model handles category detection, fragility and material ranking for you.</p>
+    <ul class="steps">
+      <li><span class="n">1</span> Name the product</li>
+      <li><span class="n">2</span> Pick shipping & priorities</li>
+      <li><span class="n">3</span> Get ranked eco materials</li>
+    </ul>
+  </div>
 
-    <h1>🌱 EcoPack AI</h1>
-    <p>AI-driven smart packaging system</p>
-    <form action="/">
-        <button type="button" onclick="window.location.href='/'">⬅ Back to About</button>
-    </form>
+  <form class="formcard" method="POST" action="/predict">
+    <span class="badge">📦 SMART PACKAGING FINDER</span>
+    <h2>Get your packaging match</h2>
+    <p class="sub">Describe the product and let EcoPack AI do the sorting.</p>
 
-    <form method="POST" action="/predict">
+    <label>📦 Product name</label>
+    <input type="text" name="product_name" placeholder="e.g. wine glass, milk bottle, gaming laptop" required>
 
-        <label>📦 Product Name</label>
-        <input type="text" name="product_name" placeholder="e.g. milk bottle, laptop" required>
+    <label>🚚 Shipping type</label>
+    <select name="shipping_type">
+      <option value="domestic">Domestic</option>
+      <option value="international">International</option>
+    </select>
 
-        <label>🚚 Shipping Type</label>
-        <select name="shipping_type">
-            <option value="domestic">Domestic</option>
-            <option value="international">International</option>
-        </select>
+    <label>🌍 Sustainability priority</label>
+    <select name="sustainability_priority">
+      <option value="low">Low — balance cost & protection</option>
+      <option value="high">High — greenest possible</option>
+    </select>
 
-        <label>🌍 Sustainability Priority</label>
-        <select name="sustainability_priority">
-            <option value="low">Low</option>
-            <option value="high">High</option>
-        </select>
-
-        <button type="submit">🚀 Get Recommendation</button>
-
-    </form>
-
+    <button type="submit" class="submit">🚀 Get recommendation</button>
+    <div class="backlink"><a href="/">⬅ Back to about page</a></div>
+  </form>
 </div>
 
-<div id="loader">
-    <div class="spinner"></div>
-</div>
+<div id="loader"><div class="spinner"></div><div class="spinner-txt">Analyzing materials…</div></div>
 
 <script>
-document.querySelector("form").addEventListener("submit", function() {
-    document.getElementById("loader").style.display = "flex";
+document.querySelector("form").addEventListener("submit",function(){
+  document.getElementById("loader").style.display="flex";
 });
 </script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+(function(){
+  if(!window.THREE) return;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canvas=document.getElementById('bg3d');
+  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  const scene=new THREE.Scene();
+  const camera=new THREE.PerspectiveCamera(45,innerWidth/innerHeight,0.1,100);camera.position.z=6;
+  const COUNT=1100,pos=new Float32Array(COUNT*3);
+  for(let i=0;i<COUNT*3;i++)pos[i]=(Math.random()-0.5)*26;
+  const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+  const pts=new THREE.Points(g,new THREE.PointsMaterial({color:0x7fe6a8,size:0.04,transparent:true,opacity:.55}));
+  scene.add(pts);
+  // floating parcel (box) to match the hero
+  const wire=new THREE.Group();
+  const box=new THREE.Mesh(new THREE.BoxGeometry(1.4,1.15,1.4),
+    new THREE.MeshStandardMaterial({color:0x1f9d57,roughness:.6,metalness:.1,
+      emissive:0x0c3d24,emissiveIntensity:.35,transparent:true,opacity:.55}));
+  const edges=new THREE.LineSegments(new THREE.EdgesGeometry(box.geometry),
+    new THREE.LineBasicMaterial({color:0xb7f24a,transparent:true,opacity:.5}));
+  wire.add(box);wire.add(edges);
+  wire.position.set(3.2,0.4,0);scene.add(wire);
+  scene.add(new THREE.AmbientLight(0x2a4a3a,1.2));
+  const dl=new THREE.DirectionalLight(0xb7f24a,1.6);dl.position.set(4,5,6);scene.add(dl);
+  function layout(){renderer.setSize(innerWidth,innerHeight);camera.aspect=innerWidth/innerHeight;
+    camera.updateProjectionMatrix();wire.visible=innerWidth>900;}
+  layout();addEventListener('resize',layout);
+  let t=0;(function frame(){requestAnimationFrame(frame);t+=reduce?0:0.003;
+    pts.rotation.y=t*0.2;pts.rotation.x=t*0.05;wire.rotation.y=t;wire.rotation.x=t*0.5;
+    renderer.render(scene,camera);})();
+})();
+</script>
 </body>
 </html>
