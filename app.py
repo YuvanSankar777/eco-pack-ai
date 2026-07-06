@@ -1,39 +1,49 @@
+import os
 from flask import Flask, request, jsonify, render_template # type: ignore
 import joblib
 import pandas as pd
 from nlp_model import predict_category
-import psycopg2
+
+try:
+    import psycopg2
+except ImportError:  # DB driver is optional in deploys without a database
+    psycopg2 = None
+
+# Product-history storage is optional: it only runs when DATABASE_URL is set.
+# On a host without a database the save simply no-ops so recommendations
+# never break. Locally, set DATABASE_URL=postgresql://postgres:root@localhost/eco_pack
+DATABASE_URL = os.environ.get("DATABASE_URL")
 
 def save_user_product(product_name, category, fragility):
-    conn = psycopg2.connect(
-        host="localhost",
-        database="eco_pack",
-        user="postgres",
-        password="root"
-    )
+    if not DATABASE_URL or psycopg2 is None:
+        return  # no database configured — skip silently
 
-    cursor = conn.cursor()
+    try:
+        conn = psycopg2.connect(DATABASE_URL)
+        cursor = conn.cursor()
 
-    # normalize
-    product_name = product_name.lower().strip()
+        # normalize
+        product_name = product_name.lower().strip()
 
-    # check if exists
-    cursor.execute("""
-        SELECT 1 FROM user_products WHERE product_name = %s
-    """, (product_name,))
-
-    exists = cursor.fetchone()
-
-    if not exists:
+        # check if exists
         cursor.execute("""
-            INSERT INTO user_products (product_name, category, fragility)
-            VALUES (%s, %s, %s)
-        """, (product_name, category, fragility))
+            SELECT 1 FROM user_products WHERE product_name = %s
+        """, (product_name,))
 
-        conn.commit()
+        exists = cursor.fetchone()
 
-    cursor.close()
-    conn.close()
+        if not exists:
+            cursor.execute("""
+                INSERT INTO user_products (product_name, category, fragility)
+                VALUES (%s, %s, %s)
+            """, (product_name, category, fragility))
+
+            conn.commit()
+
+        cursor.close()
+        conn.close()
+    except Exception as e:  # never let a DB hiccup break the recommendation
+        app.logger.warning("save_user_product skipped: %s", e)
 
 app = Flask(__name__)
 
@@ -157,4 +167,7 @@ def analyze_product(product_name):
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5001)
+    # Local dev server. In production the app is served by gunicorn (see Dockerfile).
+    port = int(os.environ.get("PORT", 5001))
+    debug = os.environ.get("FLASK_DEBUG", "0") == "1"
+    app.run(host="0.0.0.0", port=port, debug=debug)

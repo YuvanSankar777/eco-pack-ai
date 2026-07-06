@@ -1,0 +1,11 @@
+venv/
+__pycache__/
+*.pyc
+.git/
+.gitignore
+.claude/
+.templates_backup_*/
+eco_pack.ipynb
+.DS_Store
+scratchpad*
+*.log
